@@ -72,7 +72,7 @@ const createPayment = async (
       tenantId,
     },
 
-    success_url: `${config.app_url}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${config.app_url}/payment/success`,
 
     cancel_url: `${config.app_url}/payment/cancel`,
   });
