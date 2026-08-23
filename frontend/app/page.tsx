@@ -10,7 +10,7 @@ export default async function HomePage() {
 
   return (
     <div>
-      <Hero/>
+      <Hero />
 
       <section className="container-page py-16">
         <div className="mb-8 flex items-end justify-between gap-4">
@@ -35,21 +35,50 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section className="bg-white py-16">
-        <div className="container-page grid gap-6 md:grid-cols-3">
-          {[
-            [ShieldCheck, "Trusted listings", "Property information comes directly from your marketplace API."],
-            [CheckCircle2, "Simple requests", "Tenants can submit, track, and pay for approved rental requests."],
-            [Sparkles, "Role-based dashboards", "Tenant, landlord, and admin experiences stay focused and secure."]
-          ].map(([Icon, title, text]) => (
-            <div key={title as string} className="card p-6">
-              <div className="inline-flex rounded-xl bg-brand-50 p-3 text-brand-700">
-                <Icon className="h-5 w-5" />
+      <section className="bg-white py-24">
+        <div className="container-page">
+          <div className="max-w-xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-700">
+              Why RentNest
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+              Built for how renting actually works.
+            </h2>
+          </div>
+
+          <div className="mt-14 grid divide-y divide-slate-200 border-t border-slate-200 md:grid-cols-3 md:divide-x md:divide-y-0">
+            {[
+              [
+                ShieldCheck,
+                "01",
+                "Trusted listings",
+                "Property information comes directly from your marketplace API — no manual re-entry, no stale data.",
+              ],
+              [
+                CheckCircle2,
+                "02",
+                "Simple requests",
+                "Tenants can submit, track, and pay for approved rental requests without a single phone call.",
+              ],
+              [
+                Sparkles,
+                "03",
+                "Role-based dashboards",
+                "Tenant, landlord, and admin experiences stay focused, permissioned, and easy to reason about.",
+              ],
+            ].map(([Icon, index, title, text]) => (
+              <div key={title as string} className="flex flex-col gap-4 py-8 pr-8 md:py-2 md:pl-8 md:first:pl-0">
+                <div className="flex items-center justify-between">
+                  <Icon className="h-5 w-5 text-brand-700" />
+                  <span className="font-mono text-xs text-slate-300">{index as string}</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900">{title as string}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-500">{text as string}</p>
+                </div>
               </div>
-              <h3 className="mt-4 font-semibold">{title as string}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">{text as string}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
     </div>
