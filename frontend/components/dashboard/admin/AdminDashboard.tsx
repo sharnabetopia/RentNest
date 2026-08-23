@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Ban, Building2, Search, ShieldCheck, Users } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { getAdminUsers, updateAdminUser } from "@/lib/api/admin";
 import type { User } from "@/lib/types";
@@ -29,7 +30,12 @@ export function AdminDashboard() {
     <div className="container-page py-10">
       <div className="mb-8"><p className="text-sm font-semibold uppercase tracking-wider text-brand-600">Administration</p><h1 className="page-title mt-1">Platform overview</h1><p className="mt-2 text-slate-500">Monitor users and marketplace activity.</p></div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {[[Users, "Total users", users.length], [Building2, "Properties", "API"], [ShieldCheck, "Pending moderation", "API"], [Ban, "Banned users", users.filter((x) => x.status === "BANNED").length]].map(([Icon, label, value]) => <div key={label as string} className="card p-5"><Icon className="h-5 w-5 text-brand-600" /><p className="mt-4 text-2xl font-bold">{value as string | number}</p><p className="text-sm text-slate-500">{label as string}</p></div>)}
+        {( [
+          [Users, "Total users", users.length],
+          [Building2, "Properties", "API"],
+          [ShieldCheck, "Pending moderation", "API"],
+          [Ban, "Banned users", users.filter((x) => x.status === "BANNED").length],
+        ] as Array<[LucideIcon, string, string | number]>).map(([Icon, label, value]) => <div key={label} className="card p-5"><Icon className="h-5 w-5 text-brand-600" /><p className="mt-4 text-2xl font-bold">{value}</p><p className="text-sm text-slate-500">{label}</p></div>)}
       </div>
 
       <section className="card mt-8 overflow-hidden">
