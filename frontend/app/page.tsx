@@ -56,8 +56,10 @@ export default async function HomePage() {
           <Link href="/properties" className="text-sm font-semibold text-brand-700">View all →</Link>
         </div>
         {properties.length ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property) => <PropertyCard key={property.id} property={property} />)}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {properties.slice(0, 4).map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
           </div>
         ) : (
           <div className="card p-10 text-center">
