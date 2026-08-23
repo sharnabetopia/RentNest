@@ -1,0 +1,5 @@
+-- AlterEnum
+ALTER TYPE "RentalStatus" ADD VALUE 'COMPLETED';
+
+-- AlterTable
+ALTER TABLE "Payments" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
