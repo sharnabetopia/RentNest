@@ -15,7 +15,7 @@ export function PaymentPage({ rentalId }: { rentalId: string }) {
       if (response.data.checkoutUrl) {
         window.location.href = response.data.checkoutUrl;
       } else {
-        window.location.href = `/payment/success?payment_id=${response.data.paymentId || ""}`;
+        window.location.href = `/payment/success?payment_id=${response.data.sessionId || ""}`;
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not start payment.");

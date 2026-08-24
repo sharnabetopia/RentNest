@@ -7,10 +7,17 @@ import type { Property, PropertyFilters } from "@/lib/types";
 import { PropertyCard } from "./PropertyCard";
 import { PageSkeleton } from "@/components/ui/PageSkeleton";
 
+type BrowserFilters = PropertyFilters & {
+  propertyType?: string;
+  amenities?: string[];
+  search?: string;
+  location?: string;
+};
+
 export function PropertyBrowser() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [filters, setFilters] = useState<PropertyFilters>({});
+  const [filters, setFilters] = useState<BrowserFilters>({});
   const [loading, setLoading] = useState(true);
   const [mobileFilters, setMobileFilters] = useState(false);
 
@@ -99,7 +106,7 @@ export function PropertyBrowser() {
       <div className="mb-5 flex items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
-          <input className="input pl-10" placeholder="Search properties..." value={filters.search || ""} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+          <input className="input pl-10" placeholder="Search properties..." value={filters.search || ""} onChange={(e) => setFilters((current) => ({ ...current, search: e.target.value }))} />
         </div>
         <button className="btn-secondary lg:hidden" onClick={() => setMobileFilters(true)}><SlidersHorizontal className="mr-2 h-4 w-4" /> Filters</button>
       </div>
