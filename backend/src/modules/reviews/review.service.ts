@@ -11,7 +11,19 @@ const createReview = async (tenantId: string, payload: { propertyId: string, rat
   });
 
   if (!completedRental) {
-    throw new Error("You can only review properties you have completely rented");
+    throw new Error("You can only review properties you have completed renting");
+  }
+
+  // Check if tenant already reviewed this property
+  const existingReview = await prisma.review.findFirst({
+    where: {
+      tenantId,
+      propertyId: payload.propertyId
+    }
+  });
+
+  if (existingReview) {
+    throw new Error("You have already reviewed this property");
   }
 
   const review = await prisma.review.create({
