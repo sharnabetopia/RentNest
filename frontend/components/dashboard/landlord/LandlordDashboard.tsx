@@ -2,14 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  Building2,
-  DollarSign,
-  Plus,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
-import { getLandlordProperties, getLandlordRequests } from "@/lib/api/landlord";
+import { Building2, DollarSign, Plus, Trash2, Users, type LucideIcon } from "lucide-react";
+import { toast } from "sonner";
+import { getLandlordProperties, getLandlordRequests, deleteLandlordProperty } from "@/lib/api/landlord";
 import type { Property, Rental } from "@/lib/types";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { PageSkeleton } from "@/components/ui/PageSkeleton";
@@ -18,6 +13,7 @@ export function LandlordDashboard() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [requests, setRequests] = useState<Rental[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([getLandlordProperties(), getLandlordRequests()])
@@ -28,6 +24,19 @@ export function LandlordDashboard() {
       .catch(() => {})
       .finally(() => setIsLoading(false));
   }, []);
+
+  async function handleDelete(id: string, title: string) {
+    setDeletingId(id);
+    try {
+      await deleteLandlordProperty(id);
+      setProperties((prev) => prev.filter((p) => p.id !== id));
+      toast.success(`"${title}" deleted successfully.`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not delete property.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   if (isLoading) {
     return <PageSkeleton />;
@@ -120,7 +129,7 @@ export function LandlordDashboard() {
 
               <div className="flex gap-2">
                 <span
-                  className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                  className={`rounded-full px-2.5 pt-3 text-xs font-semibold ${
                     property.status === "AVAILABLE"
                       ? "bg-emerald-50 text-emerald-700"
                       : "bg-slate-100 text-slate-600"
@@ -137,6 +146,14 @@ export function LandlordDashboard() {
                 >
                   Edit
                 </Link>
+
+                <button
+                  onClick={() => handleDelete(property.id, property.title)}
+                  disabled={deletingId === property.id}
+                  className="btn-secondary text-red-600 hover:bg-red-50 disabled:opacity-50"
+                >
+                  {deletingId === property.id ? "Deleting..." : "Delete"}
+                </button>
               </div>
             </div>
           ))
