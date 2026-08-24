@@ -43,13 +43,13 @@ export function LoginForm() {
 
         <div className="mt-6">
           <label className="label">Email</label>
-          <div className="relative"><Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" /><input className={`input pl-10 ${errors.email ? "border-red-500" : ""}`} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" /></div>
+          <div className="relative"><Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" /><input className={`input !pl-10 ${errors.email ? "border-red-500" : ""}`} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" /></div>
           {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
         </div>
 
         <div className="mt-4">
           <label className="label">Password</label>
-          <div className="relative"><LockKeyhole className="absolute left-3 top-3 h-4 w-4 text-slate-400" /><input className={`input pl-10 ${errors.password ? "border-red-500" : ""}`} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" /></div>
+          <div className="relative"><LockKeyhole className="absolute left-3 top-3 h-4 w-4 text-slate-400" /><input className={`input !pl-10 ${errors.password ? "border-red-500" : ""}`} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" /></div>
           {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password}</p>}
         </div>
 
