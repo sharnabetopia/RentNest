@@ -3,28 +3,47 @@
 import { useEffect, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { getCategories, getProperties } from "@/lib/api/properties";
-import type { Property, PropertyFilters } from "@/lib/types";
+import type { Property, PropertyFilters, Category } from "@/lib/types";
 import { PropertyCard } from "./PropertyCard";
 import { PageSkeleton } from "@/components/ui/PageSkeleton";
 
-type BrowserFilters = PropertyFilters & {
-  propertyType?: string;
+type BrowserFilters = {
+  searchTerm?: string;
+  city?: string;
+  categoryId?: string;
+  minPrice?: number;
+  maxPrice?: number;
   amenities?: string[];
-  search?: string;
-  location?: string;
 };
 
 export function PropertyBrowser() {
   const [properties, setProperties] = useState<Property[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [filters, setFilters] = useState<BrowserFilters>({});
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [city, setCity] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [minPrice, setMinPrice] = useState<number | undefined>();
+  const [maxPrice, setMaxPrice] = useState<number | undefined>();
   const [loading, setLoading] = useState(true);
   const [mobileFilters, setMobileFilters] = useState(false);
+
+  useEffect(() => {
+    getCategories().then((r) => setCategories(r.data)).catch(() => setCategories([]));
+    load();
+  }, []);
+
+  // Filter by search + sidebar filters — only applied on button click
 
   async function load() {
     setLoading(true);
     try {
-      const response = await getProperties(filters);
+      const response = await getProperties({
+        searchTerm: searchTerm || undefined,
+        city: city || undefined,
+        categoryId: categoryId || undefined,
+        minPrice,
+        maxPrice,
+      });
       setProperties(response.data);
     } catch {
       setProperties([]);
@@ -33,63 +52,51 @@ export function PropertyBrowser() {
     }
   }
 
-  useEffect(() => {
-    getCategories().then((r) => setCategories(r.data.map((x) => x.name))).catch(() => setCategories([]));
-  }, []);
+  function handleSearch() {
+    load();
+  }
 
-  useEffect(() => {
-    const timer = setTimeout(load, 250);
-    return () => clearTimeout(timer);
-  }, [filters]);
-
-  function clear() {
-    setFilters({});
+  function handleClear() {
+    setSearchTerm("");
+    setCity("");
+    setCategoryId("");
+    setMinPrice(undefined);
+    setMaxPrice(undefined);
+    load();
   }
 
   const FilterPanel = () => (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">Filters</h2>
-        <button onClick={clear} className="text-xs font-semibold text-brand-700">Clear all</button>
+        <button onClick={handleClear} className="text-xs font-semibold text-brand-700">Clear all</button>
       </div>
       <div>
         <label className="label">Location</label>
-        <input className="input" value={filters.location || ""} onChange={(e) => setFilters({ ...filters, location: e.target.value })} placeholder="Dhaka, Dhanmondi..." />
+        <input className="input" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Dhaka, Dhanmondi..." />
       </div>
       <div>
-        <label className="label">Property type</label>
-        <select className="input" value={filters.propertyType || ""} onChange={(e) => setFilters({ ...filters, propertyType: e.target.value || undefined })}>
-          <option value="">All types</option>
-          {(categories.length ? categories : ["APARTMENT", "HOUSE", "ROOM", "STUDIO"]).map((x) => <option key={x} value={x}>{x}</option>)}
+        <label className="label">Category</label>
+        <select className="input" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+          <option value="">All categories</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>{cat.name}</option>
+          ))}
         </select>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="label">Min price</label>
-          <input type="number" className="input" value={filters.minPrice ?? ""} onChange={(e) => setFilters({ ...filters, minPrice: e.target.value ? Number(e.target.value) : undefined })} />
+          <input type="number" className="input" value={minPrice ?? ""} onChange={(e) => setMinPrice(e.target.value ? Number(e.target.value) : undefined)} />
         </div>
         <div>
           <label className="label">Max price</label>
-          <input type="number" className="input" value={filters.maxPrice ?? ""} onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value ? Number(e.target.value) : undefined })} />
+          <input type="number" className="input" value={maxPrice ?? ""} onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : undefined)} />
         </div>
       </div>
-      <div>
-        <label className="label">Amenities</label>
-        <div className="space-y-2">
-          {["Parking", "WiFi", "AC", "Security", "Gym"].map((amenity) => {
-            const selected = filters.amenities?.includes(amenity);
-            return (
-              <label key={amenity} className="flex items-center gap-2 text-sm text-slate-600">
-                <input type="checkbox" checked={selected || false} onChange={() => {
-                  const current = filters.amenities || [];
-                  setFilters({ ...filters, amenities: selected ? current.filter((x) => x !== amenity) : [...current, amenity] });
-                }} />
-                {amenity}
-              </label>
-            );
-          })}
-        </div>
-      </div>
+      <button onClick={() => load()} className="btn-primary w-full">
+        Apply & Search
+      </button>
     </div>
   );
 
@@ -105,9 +112,15 @@ export function PropertyBrowser() {
 
       <div className="mb-5 flex items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
-          <input className="input pl-10" placeholder="Search properties..." value={filters.search || ""} onChange={(e) => setFilters((current) => ({ ...current, search: e.target.value }))} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <input className="input !pl-12" placeholder="Search properties..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         </div>
+        <button onClick={handleSearch} className="btn-primary whitespace-nowrap">
+          Search
+        </button>
+        <button onClick={handleClear} className="btn-secondary whitespace-nowrap">
+          Clear
+        </button>
         <button className="btn-secondary lg:hidden" onClick={() => setMobileFilters(true)}><SlidersHorizontal className="mr-2 h-4 w-4" /> Filters</button>
       </div>
 
@@ -122,7 +135,7 @@ export function PropertyBrowser() {
           ) : (
             <div className="card p-12 text-center">
               <h3 className="font-semibold">No properties match your filters</h3>
-              <button onClick={clear} className="mt-4 text-sm font-semibold text-brand-700">Reset filters</button>
+              <button onClick={handleClear} className="mt-4 text-sm font-semibold text-brand-700">Reset filters</button>
             </div>
           )}
         </section>
