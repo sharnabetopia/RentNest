@@ -3,18 +3,11 @@
 import { useEffect, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { getCategories, getProperties } from "@/lib/api/properties";
-import type { Property, PropertyFilters, Category } from "@/lib/types";
+import type { Property,  Category } from "@/lib/types";
 import { PropertyCard } from "./PropertyCard";
 import { PageSkeleton } from "@/components/ui/PageSkeleton";
 
-type BrowserFilters = {
-  searchTerm?: string;
-  city?: string;
-  categoryId?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  amenities?: string[];
-};
+
 
 export function PropertyBrowser() {
   const [properties, setProperties] = useState<Property[]>([]);
