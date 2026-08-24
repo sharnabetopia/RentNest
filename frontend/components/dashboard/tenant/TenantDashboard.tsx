@@ -7,18 +7,27 @@ import type { LucideIcon } from "lucide-react";
 import { getMyRentals } from "@/lib/api/rentals";
 import { getPayments } from "@/lib/api/payments";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { PageSkeleton } from "@/components/ui/PageSkeleton";
 import type { Payment, Rental } from "@/lib/types";
 
 export function TenantDashboard() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getMyRentals(), getPayments()]).then(([r, p]) => {
-      setRentals(r.data);
-      setPayments(p.data);
-    }).catch(() => {});
+    Promise.all([getMyRentals(), getPayments()])
+      .then(([r, p]) => {
+        setRentals(r.data);
+        setPayments(p.data);
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
   }, []);
+
+  if (isLoading) {
+    return <PageSkeleton />;
+  }
 
   const approved = rentals.filter((x) => x.status === "APPROVED");
 

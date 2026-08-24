@@ -12,10 +12,12 @@ import {
 import { getLandlordProperties, getLandlordRequests } from "@/lib/api/landlord";
 import type { Property, Rental } from "@/lib/types";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { PageSkeleton } from "@/components/ui/PageSkeleton";
 
 export function LandlordDashboard() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [requests, setRequests] = useState<Rental[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([getLandlordProperties(), getLandlordRequests()])
@@ -23,8 +25,13 @@ export function LandlordDashboard() {
         setProperties(p.data);
         setRequests(r.data);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
   }, []);
+
+  if (isLoading) {
+    return <PageSkeleton />;
+  }
 
   const stats: {
     icon: LucideIcon;

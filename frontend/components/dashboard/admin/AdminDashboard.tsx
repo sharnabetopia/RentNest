@@ -5,24 +5,56 @@ import { Ban, Building2, Search, ShieldCheck, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { getAdminUsers, updateAdminUser } from "@/lib/api/admin";
+import { PageSkeleton } from "@/components/ui/PageSkeleton";
 import type { User } from "@/lib/types";
 
 export function AdminDashboard() {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => { getAdminUsers().then((r) => setUsers(r.data)).catch(() => toast.error("Could not load users.")); }, []);
+  useEffect(() => {
+    getAdminUsers()
+      .then((r) => setUsers(r.data))
+      .catch(() => toast.error("Could not load users."))
+      .finally(() => setIsLoading(false));
+  }, []);
 
-  const filtered = useMemo(() => users.filter((u) => `${u.name} ${u.email}`.toLowerCase().includes(search.toLowerCase())), [users, search]);
+  const filtered = useMemo(
+    () =>
+      users.filter((u) =>
+        `${u.name} ${u.email}`
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      ),
+    [users, search]
+  );
+
+  if (isLoading) {
+    return <PageSkeleton />;
+  }
 
   async function toggle(user: User) {
     try {
       const next = user.status === "BANNED" ? "ACTIVE" : "BANNED";
+
       await updateAdminUser(String(user.id), next);
-      setUsers((current) => current.map((x) => x.id === user.id ? { ...x, status: next } : x));
-      toast.success(next === "BANNED" ? "User banned." : "User unbanned.");
+
+      setUsers((current) =>
+        current.map((x) =>
+          x.id === user.id ? { ...x, status: next } : x
+        )
+      );
+
+      toast.success(
+        next === "BANNED" ? "User banned." : "User unbanned."
+      );
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not update user.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Could not update user."
+      );
     }
   }
 
