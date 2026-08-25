@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  ArrowRight,
   CheckCircle2,
   Home,
   ShieldCheck,
@@ -27,9 +28,9 @@ export default async function HomePage() {
           </div>
           <Link
             href="/properties"
-            className="text-sm font-semibold text-brand-700"
+            className="text-sm font-semibold text-brand-700 flex items-center gap-1"
           >
-            View all →
+            View all <ArrowRight size={16}/>
           </Link>
         </div>
         {properties.length ? (
