@@ -2,9 +2,20 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Building2, DollarSign, Plus, Trash2, Users, type LucideIcon } from "lucide-react";
+import {
+  Building2,
+  DollarSign,
+  Plus,
+  Trash2,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import { toast } from "sonner";
-import { getLandlordProperties, getLandlordRequests, deleteLandlordProperty } from "@/lib/api/landlord";
+import {
+  getLandlordProperties,
+  getLandlordRequests,
+  deleteLandlordProperty,
+} from "@/lib/api/landlord";
 import type { Property, Rental } from "@/lib/types";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { PageSkeleton } from "@/components/ui/PageSkeleton";
@@ -32,7 +43,9 @@ export function LandlordDashboard() {
       setProperties((prev) => prev.filter((p) => p.id !== id));
       toast.success(`"${title}" deleted successfully.`);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not delete property.");
+      toast.error(
+        error instanceof Error ? error.message : "Could not delete property.",
+      );
     } finally {
       setDeletingId(null);
     }
@@ -79,10 +92,7 @@ export function LandlordDashboard() {
           <h1 className="page-title mt-1">Manage your rentals</h1>
         </div>
 
-        <Link
-          href="/dashboard/landlord/properties/new"
-          className="btn-primary"
-        >
+        <Link href="/dashboard/landlord/properties/new" className="btn-primary">
           <Plus className="mr-2 h-4 w-4" />
           Add property
         </Link>
@@ -122,8 +132,8 @@ export function LandlordDashboard() {
                 <p className="font-semibold">{property.title}</p>
 
                 <p className="mt-1 text-sm text-slate-500">
-                  {`${property.address}, ${property.city}`} · $
-                  {property.rent}/month
+                  {`${property.address}, ${property.city}`} · ${property.rent}
+                  /month
                 </p>
               </div>
 

@@ -10,10 +10,7 @@ export function PropertyCard({ property }: { property: Property }) {
 
   return (
     <article className="card overflow-hidden">
-      <Link
-        href={`/properties/${property.id}`}
-        className="relative block h-56"
-      >
+      <Link href={`/properties/${property.id}`} className="relative block h-56">
         <Image
           src={image}
           alt={property.title}

@@ -56,14 +56,11 @@ export default function Hero() {
           </div>
         </div>
 
-
         {/* Stat row */}
         <div className="mt-14 flex max-w-2xl flex-wrap divide-x divide-white/20 border-t border-white/20 pt-7">
           {STATS.map(([value, label]) => (
             <div key={label} className="px-6 first:pl-0">
-              <p className="text-2xl font-semibold tracking-tight">
-                {value}
-              </p>
+              <p className="text-2xl font-semibold tracking-tight">{value}</p>
               <p className="mt-1 text-sm text-white/60">{label}</p>
             </div>
           ))}

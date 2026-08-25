@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Home, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  CheckCircle2,
+  Home,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { PropertyCard } from "@/components/properties/PropertyCard";
 import { getProperties } from "@/lib/api/properties";
 import Hero from "@/components/home/Hero";
@@ -15,10 +20,17 @@ export default async function HomePage() {
       <section className="container-page py-16">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wider text-brand-600">Featured</p>
+            <p className="text-sm font-semibold uppercase tracking-wider text-brand-600">
+              Featured
+            </p>
             <h2 className="mt-1 text-3xl font-bold">Popular properties</h2>
           </div>
-          <Link href="/properties" className="text-sm font-semibold text-brand-700">View all →</Link>
+          <Link
+            href="/properties"
+            className="text-sm font-semibold text-brand-700"
+          >
+            View all →
+          </Link>
         </div>
         {properties.length ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -30,7 +42,9 @@ export default async function HomePage() {
           <div className="card p-10 text-center">
             <Home className="mx-auto h-10 w-10 text-slate-400" />
             <h3 className="mt-3 font-semibold">No featured properties yet</h3>
-            <p className="mt-1 text-sm text-slate-500">Connect the backend and add your first listings.</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Connect the backend and add your first listings.
+            </p>
           </div>
         )}
       </section>
@@ -67,14 +81,23 @@ export default async function HomePage() {
                 "Tenant, landlord, and admin experiences stay focused, permissioned, and easy to reason about.",
               ],
             ].map(([Icon, index, title, text]) => (
-              <div key={title as string} className="flex flex-col gap-4 py-8 pr-8 md:py-2 md:pl-8 md:first:pl-0">
+              <div
+                key={title as string}
+                className="flex flex-col gap-4 py-8 pr-8 md:py-2 md:pl-8 md:first:pl-0"
+              >
                 <div className="flex items-center justify-between">
                   <Icon className="h-5 w-5 text-brand-700" />
-                  <span className="font-mono text-xs text-slate-300">{index as string}</span>
+                  <span className="font-mono text-xs text-slate-300">
+                    {index as string}
+                  </span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900">{title as string}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-500">{text as string}</p>
+                  <h3 className="font-semibold text-slate-900">
+                    {title as string}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-500">
+                    {text as string}
+                  </p>
                 </div>
               </div>
             ))}

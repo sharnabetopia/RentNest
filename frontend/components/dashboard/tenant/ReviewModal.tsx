@@ -10,8 +10,15 @@ interface ReviewModalProps {
   onClose: () => void;
 }
 
-export function ReviewModal({ property, rentalId, isOpen, onClose }: ReviewModalProps) {
+export function ReviewModal({
+  property,
+  rentalId,
+  isOpen,
+  onClose,
+}: ReviewModalProps) {
   if (!isOpen) return null;
 
-  return <ReviewForm property={property} rentalId={rentalId} onClose={onClose} />;
+  return (
+    <ReviewForm property={property} rentalId={rentalId} onClose={onClose} />
+  );
 }

@@ -11,16 +11,26 @@ export function RequestManagement() {
   const [requests, setRequests] = useState<Rental[]>([]);
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
-  useEffect(() => { getLandlordRequests().then((r) => setRequests(r.data)).catch(() => toast.error("Could not load requests.")); }, []);
+  useEffect(() => {
+    getLandlordRequests()
+      .then((r) => setRequests(r.data))
+      .catch(() => toast.error("Could not load requests."));
+  }, []);
 
   async function update(id: string, status: "APPROVED" | "REJECTED") {
     setLoadingId(id);
     try {
       await updateLandlordRequest(id, status);
-      setRequests((current) => current.map((r) => r.id === id ? { ...r, status } : r));
-      toast.success(status === "APPROVED" ? "Request approved." : "Request rejected.");
+      setRequests((current) =>
+        current.map((r) => (r.id === id ? { ...r, status } : r)),
+      );
+      toast.success(
+        status === "APPROVED" ? "Request approved." : "Request rejected.",
+      );
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not update request.");
+      toast.error(
+        error instanceof Error ? error.message : "Could not update request.",
+      );
     } finally {
       setLoadingId(null);
     }
@@ -28,9 +38,59 @@ export function RequestManagement() {
 
   return (
     <div className="container-page py-10">
-      <div className="mb-7"><p className="text-sm font-semibold uppercase tracking-wider text-brand-600">Landlord</p><h1 className="page-title mt-1">Rental requests</h1></div>
+      <div className="mb-7">
+        <p className="text-sm font-semibold uppercase tracking-wider text-brand-600">
+          Landlord
+        </p>
+        <h1 className="page-title mt-1">Rental requests</h1>
+      </div>
       <div className="card overflow-hidden">
-        {requests.length ? requests.map((request) => <div key={request.id} className="flex flex-col gap-4 border-b border-slate-100 p-5 last:border-0 lg:flex-row lg:items-center lg:justify-between"><div><p className="font-semibold">{request.property?.title || `Request #${request.id}`}</p><p className="mt-1 text-sm text-slate-500">{request.tenant?.name || "Tenant"} · {request.tenant?.email || ""}</p><p className="mt-2 text-sm text-slate-600">{request.message || "No message provided."}</p></div><div className="flex items-center gap-3"><StatusBadge status={request.status} />{request.status === "PENDING" && <><button disabled={loadingId === request.id} onClick={() => update(request.id, "APPROVED")} className="btn-primary"><Check className="mr-1 h-4 w-4" /> Approve</button><button disabled={loadingId === request.id} onClick={() => update(request.id, "REJECTED")} className="btn-secondary text-red-600"><X className="mr-1 h-4 w-4" /> Reject</button></>}</div></div>) : <div className="p-12 text-center text-sm text-slate-500">No incoming requests.</div>}
+        {requests.length ? (
+          requests.map((request) => (
+            <div
+              key={request.id}
+              className="flex flex-col gap-4 border-b border-slate-100 p-5 last:border-0 lg:flex-row lg:items-center lg:justify-between"
+            >
+              <div>
+                <p className="font-semibold">
+                  {request.property?.title || `Request #${request.id}`}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">
+                  {request.tenant?.name || "Tenant"} ·{" "}
+                  {request.tenant?.email || ""}
+                </p>
+                <p className="mt-2 text-sm text-slate-600">
+                  {request.message || "No message provided."}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <StatusBadge status={request.status} />
+                {request.status === "PENDING" && (
+                  <>
+                    <button
+                      disabled={loadingId === request.id}
+                      onClick={() => update(request.id, "APPROVED")}
+                      className="btn-primary"
+                    >
+                      <Check className="mr-1 h-4 w-4" /> Approve
+                    </button>
+                    <button
+                      disabled={loadingId === request.id}
+                      onClick={() => update(request.id, "REJECTED")}
+                      className="btn-secondary text-red-600"
+                    >
+                      <X className="mr-1 h-4 w-4" /> Reject
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="p-12 text-center text-sm text-slate-500">
+            No incoming requests.
+          </div>
+        )}
       </div>
     </div>
   );

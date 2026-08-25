@@ -36,7 +36,9 @@ export function ReviewForm({ property, rentalId, onClose }: ReviewFormProps) {
       toast.success("Review submitted successfully!");
       onClose();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to submit review");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to submit review",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -102,7 +104,10 @@ export function ReviewForm({ property, rentalId, onClose }: ReviewFormProps) {
 
           {/* Comment */}
           <div className="mt-5">
-            <label htmlFor="comment" className="block text-sm font-semibold text-slate-700">
+            <label
+              htmlFor="comment"
+              className="block text-sm font-semibold text-slate-700"
+            >
               Your review (optional)
             </label>
             <textarea
